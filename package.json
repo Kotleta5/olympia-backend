@@ -1,0 +1,39 @@
+{
+  "name": "olympia-backend",
+  "version": "1.0.0",
+  "description": "backend for olympia school project",
+  "main": "out/index.js",
+  "scripts": {
+    "start": "node dist/index.ts",
+    "compile": "ts-node build.ts && tsc",
+    "dev": "nodemon server/index.ts",
+    "dev:debug": "nodemon --exec \"node -r ts-node/register --inspect-brk\" server/index.ts",
+    "lint": "eslint -c .eslintrc.js \"{server, test}/**/*.{js,ts,tsx}\" --quiet",
+    "lint:fix": "eslint -c .eslintrc.js \"{server, test}/**/*.{js,ts,tsx}\" --quiet --fix",
+    "test": "mocha --reporter mocha-multi-reporters -r ts-node/register \"test/**/*.ts\" --reporter-options configFile=mocha-reporters.json --exit",
+    "test:debug": "mocha -r ts-node/register --inspect-brk test/**/*.ts --exit",
+    "build": "npm run generate:specs && npm run compile",
+    "generate:specs": "npm run generate:specs:api",
+    "generate:specs:api": "node generate-types.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "argon2": "^0.40.1",
+    "class-validator": "^0.14.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-openapi-validator": "^5.1.6",
+    "knex": "^3.1.0",
+    "nocache": "^4.0.0",
+    "openapi-typescript": "^6.1.0",
+    "pg": "^8.11.3",
+    "pino": "^8.19.0",
+    "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.22",
+    "nodemon": "^3.1.0"
+  }
+}
