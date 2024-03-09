@@ -1,5 +1,3 @@
-import { validate, IsString } from 'class-validator';
-
 export interface FullData {
   gender: string;
   athlete: string;
@@ -16,6 +14,7 @@ export interface TopThreeAthletes {
 export interface TopAthletes {
   result: number;
   country: string;
+  germanCountryName: string;
 }
 
 export interface SportResult extends TopAthletes {
@@ -26,14 +25,24 @@ export interface Medalist extends SportResult {
   sport: string;
 }
 
-export interface CountryMedals {
-  country: string;
-  medals: {
-    gold: number;
-    silver: number;
-    bronze: number;
-    total: number;
+export interface CountryMedalsMap {
+  [country: string]: {
+    medals: Medals,
+    germanCountryName: string,
   }
+}
+
+export interface CountryMedal {
+  countryCode: string;
+  germanCountryName: string;
+  medals: Medals;
+}
+
+export interface Medals {
+  gold: number;
+  silver: number;
+  bronze: number;
+  total: number;
 }
 
 export interface User {

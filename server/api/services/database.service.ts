@@ -6,7 +6,6 @@ import knexlib from 'knex';
 export const knex = knexlib({
   client: 'pg',
   connection: {
-    //connectString: process.env.POSTGRES_CONNECTIONSTRING,
     host: 'localhost',
     user: 'postgres',
     password: 'password',

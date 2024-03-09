@@ -28,6 +28,11 @@ export default function routes(): (app: Application) => void {
       resultController.countries.bind(resultController)
     );
 
+    app.get(
+      '/api/countryMedals',
+      resultController.countryMedals.bind(resultController)
+    )
+
     app.post(
       '/api/register',
       authController.register.bind(authController)

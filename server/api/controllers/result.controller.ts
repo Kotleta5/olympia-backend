@@ -38,6 +38,15 @@ export class ResultController {
       res.status(500).json({ error: err.message });
     }
   }
+
+  async countryMedals(_: Request, res: Response): Promise<void> {
+    try {
+      const countries = await this.resultService.countryMedals();
+      res.status(200).json(countries).end();
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
 }
 
 export default new ResultController();
