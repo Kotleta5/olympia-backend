@@ -2,7 +2,10 @@ import { Application } from 'express';
 import nocache from 'nocache';
 import resultController from './api/controllers/result.controller';
 import authController from './api/controllers/auth.controller';
+import userManagementController from './api/controllers/user.management.controller';
+import athleteManagementController from './api/controllers/athlete.management.controller';
 import { json } from 'express';
+import { verifyTokenForAdminRole, verifyTokenForJudgerRole } from './api/middlewares/auth.middleware';
 export default function routes(): (app: Application) => void {
 
   return (app: Application) => {
@@ -35,12 +38,37 @@ export default function routes(): (app: Application) => void {
 
     app.post(
       '/api/register',
-      authController.register.bind(authController)
+      verifyTokenForAdminRole,
+      userManagementController.register.bind(userManagementController)
     )
 
     app.post(
       '/api/authenticate',
-      authController.register.bind(authController)
+      authController.authenticate.bind(authController)
+    )
+
+    app.get(
+      '/api/isAuthenticated',
+      verifyTokenForJudgerRole,
+      authController.isAuthenticated.bind(authController)
+    )
+
+    app.get(
+      '/api/userAccounts',
+      verifyTokenForAdminRole,
+      userManagementController.getUserData.bind(userManagementController)
+    )
+
+    app.get(
+      '/api/fullData',
+      verifyTokenForJudgerRole,
+      resultController.fullData.bind(resultController)
+    )
+
+    app.patch(
+      '/api/updateResult',
+      verifyTokenForJudgerRole,
+      athleteManagementController.updateResult.bind(athleteManagementController)
     )
   };
 }

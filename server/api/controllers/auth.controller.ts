@@ -1,29 +1,28 @@
-import { User } from "../interfaces/types";
-import AuthService from "../services/auth.service"
 import { Request, Response } from 'express';
+import AuthService from "../services/auth.service";
 
 export class AuthController {
   authService = new AuthService();
-  async register(req: Request<{}, {}, User>, res: Response): Promise<void> {
+
+  async authenticate(req: Request, res: Response): Promise<void> {
     try {
-      const user = req.body;
-      if (!this.validateUser(user)) {
-        res.status(400).json({ error: "Bad Request" }).end();
-      } else {
-        const token = await this.authService.register(user);
-        res.status(200).send({ token });
-      }
+      this.validateCredentials(req.body.username, req.body.password);
+      const authentication = await this.authService.authenticate(req.body.username, req.body.password);
+      res.status(200).json(authentication);
     } catch (err) {
       console.error(err);
-      res.status(401).json({ error: "Registration failed" }).end();
+      res.status(401).json({ message: err.message }).end();
     }
   }
-  validateUser(user: User): boolean {
-    if (!user.username || typeof user.username !== "string" ||
-      !user.password || typeof user.password !== "string") {
-      return false;
+
+  async isAuthenticated(_: Request, res: Response): Promise<void> {
+    res.status(200).json({ isAuthenticated: true });
+  }
+
+  private validateCredentials(username: string, password: string): void {
+    if (!username || username.length <= 0 || !password || password.length <= 0) {
+      throw new Error("invalid credentials");
     }
-    return true;
   }
 }
 

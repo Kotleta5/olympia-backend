@@ -1,35 +1,23 @@
 import * as argon2 from "argon2";
-import { error } from "console";
-import { User } from "../interfaces/types";
-import knex from "knex";
+import UserManagementService from "./user.management.service";
+import '../../common/env'
+const jwt = require('jsonwebtoken');
 
 export default class AuthService {
+  userManagementService: UserManagementService = new UserManagementService();
 
-  async register(user: User): Promise<void> {
-    
-    const hashedPassword = await argon2.hash(user.password);
-    console.log(hashedPassword);
-    console.log(hashedPassword.length);
-    // saveUser(user);
-
-    // return await knex<User>('users')
-    // .insert({
-    //   username: "ignore@example.com",
-    //   password: hashedPassword,
-    //   role: ""
-    // })
-  }
-
-  async authenticate(user: User): Promise<string> {
-    // passwordFromDb = findPasswordByUsername(username);
+  async authenticate(username: string, password: string): Promise<any> {
     try {
-      if (await argon2.verify("", user.password)) {
-        return "";
-      };
+      const userFromDb = await this.userManagementService.findUserByUsername(username);
+      if (!userFromDb) {
+        throw new Error("authentication failed");
+      }
+      await argon2.verify(userFromDb?.password ?? "", password ?? "");
+      const token = jwt.sign({ role: userFromDb.role }, process.env.JWT_SECRET, { 'expiresIn': '1h' });
+      return { token: token, role: userFromDb.role };
     } catch (err) {
       console.error(err);
+      throw new Error(err);
     }
-    throw error;
   }
-
 }

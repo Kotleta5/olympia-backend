@@ -3,6 +3,16 @@ import { Request, Response } from 'express';
 
 export class ResultController {
   resultService = new ResultService();
+
+  async fullData(_: Request, res: Response): Promise<void> {
+    try {
+      const fullData = await this.resultService.fullData();
+      res.status(200).json(fullData).end();
+    } catch (err) {
+      res.status(500).json({ error: err.message }).end();
+    }
+  }
+
   async topThreeAthletes(req: Request, res: Response): Promise<void> {
     try {
       const topAthletes = await this.resultService.topThreeAthletes(req.params.sport);

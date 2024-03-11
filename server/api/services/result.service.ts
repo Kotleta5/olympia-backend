@@ -6,6 +6,21 @@ export default class ResultService {
     [new Intl.Locale('de')], { type: 'region' }
   );
 
+  async fullData(): Promise<FullData[]> {
+    try {
+      const fullData = await knex<FullData>('alldata_list');
+      const newFullResults: FullData[] = fullData.map(fullData => {
+        return {
+          ...fullData,
+          country: this.getGermanCountryName(fullData.country),
+        };
+      });
+      return newFullResults;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
   async topThreeAthletes(sport: string): Promise<TopThreeAthletes> {
     try {
       const topMaleAthletes = await this.topThreeAthletesQuery(sport, "male");
@@ -44,8 +59,6 @@ export default class ResultService {
 
   async fullResults(sport: string, gender: string): Promise<SportResult[]> {
     try {
-      console.log(sport);
-      console.log(gender);
       const fullResults = await knex<FullData>('alldata_list')
         .select()
         .where({
@@ -70,7 +83,6 @@ export default class ResultService {
   async medalists(): Promise<Medalist[]> {
     try {
       const medalists = await knex<FullData>('alldata_list').select();
-      console.log(medalists);
       const newMedalists: Medalist[] = medalists.map((data: FullData) => {
         return {
           result: data.result,

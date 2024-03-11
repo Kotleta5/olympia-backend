@@ -1,4 +1,5 @@
 export interface FullData {
+  athlete_id: number;
   gender: string;
   athlete: string;
   sport: string;
@@ -46,7 +47,13 @@ export interface Medals {
 }
 
 export interface User {
+  id: number;
   username: string;
   password: string;
   role: string;
+}
+
+export interface UpdateResult {
+  id: number;
+  result: number;
 }
